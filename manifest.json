@@ -5,6 +5,13 @@
   "background": {
     "scripts": [ "background.js" ]
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
   "commands": {
     "example_keyboard_command": {
       "suggested_key": {
@@ -14,9 +21,14 @@
       "description": "Do the thing"
     }
   },
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
   "options_page": "options.html",
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "storage"
   ],
   "manifest_version": 2
 }
