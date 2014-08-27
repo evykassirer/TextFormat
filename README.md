@@ -1,4 +1,4 @@
-a11y-extension-starter
+TextFormat 
 ======================
 
-Skeleton of a Chrome extension
+Chrome Extension that helps you format your webpage - line/word/character spacing, bold/italics
