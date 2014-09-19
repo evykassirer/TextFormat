@@ -3,13 +3,17 @@
 // found in the LICENSE file.
 
 var setStyle = function(attribute, value) {
-  if (value == 0) 
-    document.body.style.setProperty(attribute, '');
+  if (value == 0)
+    if (attribute == "line-height") 
+      document.body.style.setProperty(attribute, '150%');
+    else
+      document.body.style.setProperty(attribute, '');
   else
     document.body.style.setProperty(attribute, value);
 }
 
 var listenForChanges = function() {
+  // Changes in the options menu
   var options = document.getElementsByName("option");
   for (var i = 0; i < options.length; i++) {
     var option = options[i];
@@ -17,6 +21,24 @@ var listenForChanges = function() {
       setStyle(this.id, this.value);
       var change = {};
       change[this.id] = this.value;
+      chrome.storage.sync.set(change, function() { 
+        for (var i in change) {
+          console.log(i + " changed to "  + change[i]);
+        }
+      })
+    }
+  }
+  // Reset to default button
+  var def =  document.getElementsByName("default")[0];
+  def.onclick = function() {
+    for (var i = 0; i < options.length; i++) {
+      var attribute = options[i];
+      // Set style in the popup
+      setStyle(attribute.id, 0);
+      attribute.value = 0;
+      // Set style on the page
+      var change = {};
+      change[attribute.id] = 0;
       chrome.storage.sync.set(change, function() { 
         for (var i in change) {
           console.log(i + " changed to "  + change[i]);

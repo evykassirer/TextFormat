@@ -1,0 +1,32 @@
+* {
+	font-family: arial;
+	font-size: 16px;
+}
+
+body {
+	line-height: 150%;
+	min-width: 225px;
+	white-space: nowrap;
+	overflow-x: hidden;
+	background-color: lightgrey;
+}
+
+select {
+	position: relative;
+	float:right;
+	border: none;
+	background: white;
+	width: 80px;
+}
+
+button {
+	width: 100%;
+	margin-top: 30px;
+	background-color: white;
+}
+
+form span {
+	position:relative;
+	height:100%;
+	vertical-align: middle;
+}

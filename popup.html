@@ -1,27 +1,13 @@
 <!doctype html>
 <html>
   <head>
-    <title>Getting Started Extension's Popup</title>
-    <style>
-      body {
-        min-width: 200px;
-        overflow-x: hidden;
-      }
-
-      img {
-        margin: 5px;
-        border: 2px solid black;
-        vertical-align: middle;
-        width: 75px;
-        height: 75px;
-      }
-    </style>
-
+    <title>Settings Menu</title>
+    <link type="text/css" rel="stylesheet" href="style.css" />
     <script src="popup.js"></script>
   </head>
   <body>
     <form action="">
-    Line Spacing:
+    <span>Line Spacing: </span>
     <select name="option" id="line-height">
       <option value="0">Default</option>
       <option value="100%">1.0</option>
@@ -30,16 +16,16 @@
       <option value="200%">2.0</option>
     </select>
     <br>
-    Letter spacing:
+    <span>Letter spacing:</span>
     <select name="option" id="letter-spacing">
       <option value="0">Default</option>
-      <option value="0.01px">0.01 px</option>
-      <option value="0.03px">0.03 px</option>
-      <option value="0.06px">0.06 px</option>
-      <option value="0.09px">0.09 px</option>
+      <option value="0.1px">0.1 px</option>
+      <option value="0.3px">0.3 px</option>
+      <option value="0.6px">0.6 px</option>
+      <option value="0.9px">0.9 px</option>
     </select>
     <br>
-    Word spacing:
+    <span>Word spacing:</span>
     <select name="option" id="word-spacing">
       <option value="0">Default</option>
       <option value="1px">1 px</option>
@@ -48,20 +34,21 @@
       <option value="9px">9 px</option>
     </select>
     <br>
-    Bold:
+    <span>Bold:</span>
     <select name="option" id="font-weight">
       <option value="0">Default</option>
       <option value="bold">All text</option>
       <option value="100">No text</option>
     </select>
     <br>
-    Italics:
+    <span>Italics:</span>
     <select name="option" id="font-style">
       <option value="0">Default</option>
       <option value="italic">All text</option>
       <option value="normal">No text</option>
     </select>
     </form>
+    <button name="default">Reset all to default</button>
   </body>
 </html>
 
