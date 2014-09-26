@@ -9,12 +9,20 @@ found in the LICENSE file.
 	font-size: 16px;
 }
 
+h3 {
+	font-size: 25px;
+	margin-top: 0;
+	text-align: center;
+	color: royalblue;
+}
+
 body {
-	line-height: 150%;
-	min-width: 225px;
+	line-height: 200%;
+	min-width: 235px;
+	padding: 10px;
 	white-space: nowrap;
 	overflow-x: hidden;
-	background-color: lightgrey;
+	background-color: #E6E6FA;
 }
 
 select {
@@ -22,7 +30,9 @@ select {
 	float:right;
 	border: none;
 	background: white;
-	width: 80px;
+	width: 90px;
+	border-radius:4px;
+	padding:3px;
 }
 
 button {

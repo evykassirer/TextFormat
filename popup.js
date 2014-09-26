@@ -7,9 +7,9 @@
  * their style preferences. 
  */
 var setStyle = function(attribute, value) {
-  // The default height for the popup box is 1.5, and anything less will cause weird formatting.
-  if (attribute == 'line-height' && (value == 0 || value < "150%"))
-    document.body.style.setProperty(attribute, '150%');
+  // The default height for the popup box is 2.0 and anything less will cause weird formatting.
+  if (attribute == 'line-height')
+    return;
   else if (value == 0)   // A value of 0 means to change to default.
     document.body.style.setProperty(attribute, '');
   else
