@@ -6,7 +6,37 @@
  * for debugging - turns on console log statements
  * @type {boolean}
  */
-var DEBUG = false;
+var DEBUG = true;
+
+
+var allStyles = {};
+// set default values ---- ******This should be global, not defaul set here****************
+allStyles['line-height'] = "0";
+allStyles['letter-spacing'] = "0";
+allStyles['word-spacing'] = "0";
+allStyles['font-weight'] = "0";
+allStyles['font-style'] = "0";
+
+
+var setMenuValues = function() {
+// Set current values in the menu.
+  var options = document.getElementsByName("option");
+  for (var i = 0; i < options.length; i++) {
+    var attribute = options[i].id;
+    if (DEBUG) console.log("loading attribute: " + attribute);
+    chrome.storage.sync.get(attribute, function(result) {
+      if (result) {
+        for (var i in result) {
+          if (DEBUG) console.log("attribute: " + i + " loaded with value: " + result[i]);
+          setStyle(i, result[i]);
+          document.getElementById(i).value = result[i];
+        }
+      }
+      else if (DEBUG)
+        console.log("attribute: " + i + " loaded as default");
+    });
+  }
+}
 
 /**
  * The style of the popup is changed as well when the user changes
@@ -38,6 +68,27 @@ var setStyle = function(attribute, value) {
 }
 
 /**
+ * Changes the value of an attribute in the popup and in chrome storage
+ *
+ * @param {string} attribute to be set
+ * @param {string} new value of the attribute
+ */
+var changeStyleValue = function(attribute, value) {
+  // Change the style of the popup
+  setStyle(attribute, value);
+  // Change the stored value to alert the other tabs to change value
+  var change = {};
+  change[attribute] = value;
+  // Log the changed value to the console of the pop-up window
+  chrome.storage.sync.set(change, function() { 
+    if (!DEBUG) return;
+    for (var i in change) {
+      console.log(i + " changed to "  + change[i]);
+    }
+  });
+}
+
+/**
  * When a new value is selected for a style from the popup
  * the value is stored in chrome storage. 
  */
@@ -48,24 +99,13 @@ var listenForChanges = function() {
   for (var i = 0; i < options.length; i++) {
     var option = options[i];
     option.onchange = function() {
-      // Change the style of the popup
-      setStyle(this.id, this.value);
-      // Change the stored value to alert the other tabs to change value
-      var change = {};
-      change[this.id] = this.value;
-      // Log the changed value to the console of the pop-up window
-      chrome.storage.sync.set(change, function() { 
-        if (!DEBUG) return;
-        for (var i in change) {
-          console.log(i + " changed to "  + change[i]);
-        }
-      })
+      changeStyleValue(this.id, this.value);
     }
   }
 }
 
 /**
- * When a the reset to default button is hit, the style are reset and the
+ * When the reset to default button is hit, the styles are reset and the
  * values in the popup dropdowns are also changed.
  */
 var listenForDefault = function() {
@@ -93,6 +133,69 @@ var listenForDefault = function() {
   }
 }
 
+
+/**
+ * Saves an attribute/value pair to chrome storage
+ *
+ * @param {string} attribute 
+ */
+var saveValue = function(attribute) {
+  // fetch value from storage
+  chrome.storage.sync.get(attribute, function(result) {
+    // change will be the attribute value pair to be saved
+    var change = {};
+    // This means it was set to default.
+    if (!result || !result[attribute] || result[attribute] == "0")
+      change["saved " + attribute] = "0";
+    else
+      change["saved " + attribute] = result[attribute]; 
+    chrome.storage.sync.set(change, function() { 
+      if (!DEBUG) return;
+      for (var i in change) {
+        console.log(i + " saved as "  + change[i]);
+      }
+    });
+  });
+}
+
+
+/**
+ * When the save button is hit, the current styles ares saved
+ */
+var listenForSave = function() {
+  // Save button
+  var save =  document.getElementsByName("save")[0];
+  save.onclick = function() {
+    // Fetch each style.
+    for (var key in allStyles) {
+        saveValue(key);
+    }
+  }
+}
+
+/**
+ * When the load button is hit, the current styles are changed to the saved styles
+ */
+var listenForLoad = function() {
+  // Load button
+  var load =  document.getElementsByName("load")[0];
+  load.onclick = function() {  
+    // for each style, get the saved value and change it everywhere
+    var loadSaved = function(attribute) {
+      chrome.storage.sync.get("saved " + attribute, function(result) {
+        changeStyleValue(attribute, result["saved " + attribute])
+      })
+    }
+    // Each style option has the name "option"
+    var options = document.getElementsByName("option");
+    for (var i = 0; i < options.length; i++) {
+      var attribute = options[i].id;
+      loadSaved(attribute);
+    }
+    setMenuValues();
+  }
+}
+
 /**
  * Start the menu script as soon as the document's DOM is ready.
  * Set up the menu and call the listeners.
@@ -100,22 +203,7 @@ var listenForDefault = function() {
 document.addEventListener('DOMContentLoaded', function () {
   listenForChanges();
   listenForDefault();
-  
-  // Set current values in the menu.
-  var options = document.getElementsByName("option");
-  for (var i = 0; i < options.length; i++) {
-    var attribute = options[i].id;
-    if (DEBUG) console.log("loading attribute: " + attribute);
-    chrome.storage.sync.get(attribute, function(result) {
-      if (result) {
-        for (var i in result) {
-          if (DEBUG) console.log("attribute: " + i + " loaded with value: " + result[i]);
-          setStyle(i, result[i]);
-          document.getElementById(i).value = result[i];
-        }
-      }
-      else if (DEBUG)
-        console.log("attribute: " + i + " loaded as default");
-    });
-  }
+  listenForSave();
+  listenForLoad();
+  setMenuValues();  
 });

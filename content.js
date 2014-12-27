@@ -28,7 +28,7 @@ allStyles['font-style'] = "0";
  * @param {string} attribute to be set
  * @param {string} new value of the attribute
  */
-var loadInitialValue = function(attribute, result) {
+var loadValue = function(attribute, result) {
   var style = document.createElement('style');
   style.type = 'text/css';
   // This means it was set to default.
@@ -50,7 +50,7 @@ var loadInitialValue = function(attribute, result) {
  */
 var fetchStyle = function(attribute) {
   chrome.storage.sync.get(attribute, function(result) {
-  loadInitialValue(attribute, result); });
+    loadValue(attribute, result); });
 }
 // Fetch each style.
 for (var key in allStyles) {

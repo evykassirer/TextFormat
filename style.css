@@ -35,10 +35,16 @@ select {
 	margin-top:3px;
 }
 
-button {
+.big-button {
 	width: 100%;
 	margin-top: 30px;
-	background-color: white;
+	background-color: aliceblue;
+}
+
+.small-button {
+	width: 49%;
+	margin-top: 5px;
+	background-color: aliceblue;
 }
 
 form span {
