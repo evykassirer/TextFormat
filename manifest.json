@@ -1,10 +1,7 @@
 {
-  "name": "Skeleton extension",
+  "name": "TextFormat",
   "version": "0.1",
-  "description": "A skeleton extension to get started",
-  "background": {
-    "scripts": [ "background.js" ]
-  },
+  "description": "Adjust text style and spacing for all tabs",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -25,7 +22,6 @@
     "default_icon": "icon.png",
     "default_popup": "popup.html"
   },
-  "options_page": "options.html",
   "permissions": [
     "activeTab",
     "storage"
