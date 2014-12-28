@@ -6,7 +6,7 @@
  * for debugging - turns on console log statements
  * @type {boolean}
  */
-var DEBUG = true;
+var DEBUG = false;
 
 /** 
  * To be able to loop through style names
@@ -148,6 +148,7 @@ var saveValue = function(attribute) {
       change["saved " + attribute] = "0";
     else
       change["saved " + attribute] = result[attribute]; 
+    // Set the current value as the saved value in storage
     chrome.storage.sync.set(change, function() { 
       if (!DEBUG) return;
       for (var i in change) {
@@ -179,24 +180,24 @@ var listenForLoad = function() {
   // Load button
   var load =  document.getElementsByName("load")[0];
   load.onclick = function() {  
-    // for each style, get the saved value and change it everywhere
+    // for each style, get the saved value and change it everywhere.
+    var num_styles_loaded = 0;
     var loadSaved = function(attribute) {
       chrome.storage.sync.get("saved " + attribute, function(result) {
-        console.log("CHECKPOINT 2");
-        changeStyleValue(attribute, result["saved " + attribute])
+        changeStyleValue(attribute, result["saved " + attribute]);
+        num_styles_loaded++;
+        if (num_styles_loaded === allStyles.length) {
+          // If we've loaded all the saved styles, update the values displayed in the popup menu.
+          setMenuValues();
+        }
       })
     }
     // Each style option has the name "option"
     var options = document.getElementsByName("option");
     for (var i = 0; i < options.length; i++) {
       var attribute = options[i].id;
-      console.log("CHECKPOINT 1")
       loadSaved(attribute);
-      console.log("CHECKPOINT 3");
     }
-    console.log("CHECKPOINT 4");
-    // Update the values displayed in the popup menu.
-    setMenuValues();
   }
 }
 
