@@ -8,32 +8,33 @@
  */
 var DEBUG = true;
 
+/** 
+ * To be able to loop through style names
+ * @type {Array.<string>}
+ */ 
+var allStyles = ['line-height', 'letter-spacing', 'word-spacing', 'font-weight', 'font-style'];
 
-var allStyles = {};
-// set default values ---- ******This should be global, not defaul set here****************
-allStyles['line-height'] = "0";
-allStyles['letter-spacing'] = "0";
-allStyles['word-spacing'] = "0";
-allStyles['font-weight'] = "0";
-allStyles['font-style'] = "0";
-
-
+/**
+ * Show the current style values in the popup menu drop down menus
+ */ 
 var setMenuValues = function() {
-// Set current values in the menu.
+// All menu values have the name "option"
   var options = document.getElementsByName("option");
   for (var i = 0; i < options.length; i++) {
     var attribute = options[i].id;
-    if (DEBUG) console.log("loading attribute: " + attribute);
+    // Get the current value for the attribute from storage and display it in the menu
     chrome.storage.sync.get(attribute, function(result) {
       if (result) {
         for (var i in result) {
-          if (DEBUG) console.log("attribute: " + i + " loaded with value: " + result[i]);
+          if (DEBUG) console.log("attribute: " + i + " loaded in menu with value: " + result[i]);
           setStyle(i, result[i]);
+          // Changing the value makes it display that string
           document.getElementById(i).value = result[i];
         }
       }
+      // If result doesn't exist, then the value is default
       else if (DEBUG)
-        console.log("attribute: " + i + " loaded as default");
+        console.log("attribute: " + i + " loaded in menu as default");
     });
   }
 }
@@ -158,21 +159,21 @@ var saveValue = function(attribute) {
 
 
 /**
- * When the save button is hit, the current styles ares saved
+ * When the save button is hit, the current styles ares saved.
  */
 var listenForSave = function() {
   // Save button
   var save =  document.getElementsByName("save")[0];
   save.onclick = function() {
     // Fetch each style.
-    for (var key in allStyles) {
-        saveValue(key);
+    for (var style in allStyles) {
+        saveValue(style);
     }
   }
 }
 
 /**
- * When the load button is hit, the current styles are changed to the saved styles
+ * When the load button is hit, the current styles are changed to the saved styles.
  */
 var listenForLoad = function() {
   // Load button
@@ -194,6 +195,7 @@ var listenForLoad = function() {
       console.log("CHECKPOINT 3");
     }
     console.log("CHECKPOINT 4");
+    // Update the values displayed in the popup menu.
     setMenuValues();
   }
 }
