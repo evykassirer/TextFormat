@@ -6,7 +6,7 @@
  * for debugging - turns on console log statements
  * @type {boolean}
  */
-var DEBUG = false;
+var DEBUG = true;
 
 /** 
  * To be able to loop through style names
@@ -167,8 +167,8 @@ var listenForSave = function() {
   var save =  document.getElementsByName("save")[0];
   save.onclick = function() {
     // Fetch each style.
-    for (var style in allStyles) {
-        saveValue(style);
+    for (var i = 0; i < allStyles.length; i++) {
+        saveValue(allStyles[i]);
     }
   }
 }
