@@ -46,8 +46,6 @@ var setMenuValues = function() {
  * @param {string} new value of the attribute
  */
 var setStyle = function(attribute, value) {
-  if (DEBUG) console.log("value is type: " + typeof value); 
-
   // The default height for the popup box is 200% and anything less will cause weird formatting.
   if (attribute == 'line-height') {
     if (value == "0")
@@ -183,6 +181,7 @@ var listenForLoad = function() {
     // for each style, get the saved value and change it everywhere
     var loadSaved = function(attribute) {
       chrome.storage.sync.get("saved " + attribute, function(result) {
+        console.log("CHECKPOINT 2");
         changeStyleValue(attribute, result["saved " + attribute])
       })
     }
@@ -190,8 +189,11 @@ var listenForLoad = function() {
     var options = document.getElementsByName("option");
     for (var i = 0; i < options.length; i++) {
       var attribute = options[i].id;
+      console.log("CHECKPOINT 1")
       loadSaved(attribute);
+      console.log("CHECKPOINT 3");
     }
+    console.log("CHECKPOINT 4");
     setMenuValues();
   }
 }
