@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /**
- * for debugging - turns on console log statements
+ * For debugging - turns on console log statements
  * @type {boolean}
  */
 var DEBUG = false;
@@ -28,19 +28,21 @@ allStyles['font-style'] = "0";
  * @param {string} attribute to be set
  * @param {string} new value of the attribute
  */
-var loadValue = function(attribute, result) {
+var loadValue = function (attribute, result) {
   var style = document.createElement('style');
   style.type = 'text/css';
   // This means it was set to default.
-  if (!result || !result[attribute] || result[attribute] == "0")
+  if (!result || !result[attribute] || result[attribute] === "0") {
     style.innerHTML = '';
-  else {
-    style.innerHTML = '* { ' + attribute + ': '+ result[attribute] + '; }"';
-    if (DEBUG) console.log(attribute + " is loaded as: " + result[attribute]);
+  } else {
+    style.innerHTML = '* { ' + attribute + ': ' + result[attribute] + '; }"';
+    if (DEBUG) {
+      console.log(attribute + " is loaded as: " + result[attribute]);
+    }
   }
   document.head.appendChild(style);
   allStyles[attribute] = style;
-}
+};
 
 /**
  * Fetch the current stored styles.
@@ -48,10 +50,11 @@ var loadValue = function(attribute, result) {
  * as default style.
  * @param {string} attribute to be fetched
  */
-var fetchStyle = function(attribute) {
-  chrome.storage.sync.get(attribute, function(result) {
-    loadValue(attribute, result); });
-}
+var fetchStyle = function (attribute) {
+  chrome.storage.sync.get(attribute, function (result) {
+    loadValue(attribute, result);
+  });
+};
 // Fetch each style.
 for (var key in allStyles) {
   fetchStyle(key);
@@ -61,18 +64,19 @@ for (var key in allStyles) {
  * When the style is changed from the popup menu, the html style tag is
  * updated.
  */
-chrome.storage.onChanged.addListener(function(changes, namespace) {
+chrome.storage.onChanged.addListener(function (changes, namespace) {
   for (key in changes) {
-    if (!changes.hasOwnProperty(key)) 
-      continue; 
+    if (!changes.hasOwnProperty(key)) {
+      continue;
+    }
     var storageChange = changes[key];
     // If the value is 0, that means return to default, so remove
     // any added styling.
-    if (storageChange.newValue == "0") {
+    if (storageChange.newValue === "0") {
       allStyles[key].innerHTML = '';
       continue;
     }
     // Otherwise update the value
-    allStyles[key].innerHTML = '* { '+ key + ': '+ storageChange.newValue + '; }"';
+    allStyles[key].innerHTML = '* { ' + key + ': ' + storageChange.newValue + '; }"';
   }
 });
