@@ -8,18 +8,18 @@
  */
 var DEBUG = false;
 
+/** 
+ * To be able to loop through style names
+ * @type {Array.<string>}
+ */
+var styleNames = ['line-height', 'letter-spacing', 'word-spacing', 'font-weight', 'font-style'];
+
 /**
  * Global variable containing a dictionary of a css attribute and the
  * style element where the style is set accross the page.
- * @type {Object.<string, string>}
+ * @type {Object.<string, Element>}
  */
-var allStyles = {};
-// set default values
-allStyles['line-height'] = "0";
-allStyles['letter-spacing'] = "0";
-allStyles['word-spacing'] = "0";
-allStyles['font-weight'] = "0";
-allStyles['font-style'] = "0";
+var styleElements = {};
 
 /**
  * Creates the HTML style element that sets global styles for the page
@@ -41,7 +41,7 @@ var loadValue = function (attribute, result) {
     }
   }
   document.head.appendChild(style);
-  allStyles[attribute] = style;
+  styleElements[attribute] = style;
 };
 
 /**
@@ -56,8 +56,8 @@ var fetchStyle = function (attribute) {
   });
 };
 // Fetch each style.
-for (var key in allStyles) {
-  fetchStyle(key);
+for (var i = 0; i < styleNames.length; i++) {
+  fetchStyle(styleNames[i]);
 }
 
 /**
@@ -73,10 +73,10 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
     // If the value is 0, that means return to default, so remove
     // any added styling.
     if (storageChange.newValue === "0") {
-      allStyles[key].innerHTML = '';
+      styleElements[key].innerHTML = '';
       continue;
     }
     // Otherwise update the value
-    allStyles[key].innerHTML = '* { ' + key + ': ' + storageChange.newValue + '; }"';
+    styleElements[key].innerHTML = '* { ' + key + ': ' + storageChange.newValue + '; }"';
   }
 });

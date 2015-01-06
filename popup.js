@@ -12,7 +12,7 @@ var DEBUG = true;
  * To be able to loop through style names
  * @type {Array.<string>}
  */
-var allStyles = ['line-height', 'letter-spacing', 'word-spacing', 'font-weight', 'font-style'];
+var styleNames = ['line-height', 'letter-spacing', 'word-spacing', 'font-weight', 'font-style'];
 
 /**
  * The style of the popup is changed as well when the user changes
@@ -172,8 +172,8 @@ var listenForSave = function () {
   var save =  document.getElementsByName("save")[0];
   save.onclick = function () {
     // Fetch each style.
-    for (var i = 0; i < allStyles.length; i++) {
-      saveValue(allStyles[i]);
+    for (var i = 0; i < styleNames.length; i++) {
+      saveValue(styleNames[i]);
     }
   };
 };
@@ -191,7 +191,7 @@ var listenForLoad = function () {
       chrome.storage.sync.get("saved " + attribute, function (result) {
         changeStyleValue(attribute, result["saved " + attribute]);
         num_styles_loaded++;
-        if (num_styles_loaded === allStyles.length) {
+        if (num_styles_loaded === styleNames.length) {
           // If we've loaded all the saved styles, update the values displayed in the popup menu.
           setMenuValues();
         }
