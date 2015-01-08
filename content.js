@@ -12,25 +12,42 @@ var DEBUG = false;
  * To be able to loop through style names
  * @type {Array.<string>}
  */
-var styleNames = ['line-height', 'letter-spacing', 'word-spacing', 'font-weight', 'font-style'];
+var STYLE_NAMES = ['line-height', 'letter-spacing', 'word-spacing', 'font-weight', 'font-style'];
 
 /**
- * Global variable containing a dictionary of a css attribute and the
- * style element where the style is set accross the page.
- * @type {Object.<string, Element>}
+ * When the style is changed from the popup menu, the html style tag is
+ * updated.
+ * Maps css attribute to a style element where the style is set accross the page.
+ * @param {Object.<string, Element>} Maps css attributes to style elements
+ * where the style is set accross the page.
  */
-var styleElements = {};
+var addStorageListener = function (styleElements) {
+  chrome.storage.onChanged.addListener(function (changes, namespace) {
+    for (key in changes) {
+      if (!changes.hasOwnProperty(key)) {
+        continue;
+      }
+      var storageChange = changes[key];
+      // If the value is 0, that means return to default, so remove
+      // any added styling.
+      if (storageChange.newValue === "0") {
+        styleElements[key].innerHTML = '';
+        continue;
+      }
+      // Otherwise update the value
+      styleElements[key].innerHTML = '* { ' + key + ': ' + storageChange.newValue + '; }"';
+    }
+  });
+}
 
 /**
- * Creates the HTML style element that sets global styles for the page
- * when the page is opened.
- *
+ * Loads initial values in the style elements
+ * @param {Object.<string, Element>} maps css attributes to style elements
  * @param {string} attribute to be set
  * @param {string} new value of the attribute
  */
-var loadValue = function (attribute, result) {
-  var style = document.createElement('style');
-  style.type = 'text/css';
+var loadValue = function (styleElements, attribute, result) {
+  var style = styleElements[attribute];
   // This means it was set to default.
   if (!result || !result[attribute] || result[attribute] === "0") {
     style.innerHTML = '';
@@ -40,43 +57,46 @@ var loadValue = function (attribute, result) {
       console.log(attribute + " is loaded as: " + result[attribute]);
     }
   }
-  document.head.appendChild(style);
-  styleElements[attribute] = style;
 };
 
 /**
- * Fetch the current stored styles.
+ * Fetch a current stored style.
  * If there is no result (no stored style) loadInitialValue interprets this
  * as default style.
+ * @param {Object.<string, Element>} maps css attributes to style elements
  * @param {string} attribute to be fetched
  */
-var fetchStyle = function (attribute) {
+var fetchStyle = function (styleElements, attribute) {
   chrome.storage.sync.get(attribute, function (result) {
-    loadValue(attribute, result);
+    loadValue(styleElements, attribute, result);
   });
 };
-// Fetch each style.
-for (var i = 0; i < styleNames.length; i++) {
-  fetchStyle(styleNames[i]);
-}
 
 /**
- * When the style is changed from the popup menu, the html style tag is
- * updated.
+ * Creates the HTML style element that sets global styles for the page
+ * when the page is opened.
+ * @return {Object.<string, Element>} Maps css attributes to style elements
+ * where the style is set accross the page.
  */
-chrome.storage.onChanged.addListener(function (changes, namespace) {
-  for (key in changes) {
-    if (!changes.hasOwnProperty(key)) {
-      continue;
-    }
-    var storageChange = changes[key];
-    // If the value is 0, that means return to default, so remove
-    // any added styling.
-    if (storageChange.newValue === "0") {
-      styleElements[key].innerHTML = '';
-      continue;
-    }
-    // Otherwise update the value
-    styleElements[key].innerHTML = '* { ' + key + ': ' + storageChange.newValue + '; }"';
+var createStyleElements = function () {
+  styleElements = {};
+  for (var i = 0; i < STYLE_NAMES.length; i++) {
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = '';
+    document.head.appendChild(style);
+    styleElements[STYLE_NAMES[i]] = style;
   }
-});
+  return styleElements;
+}
+
+var onPageStart = function () {
+  var styleElements = createStyleElements();
+  // Fetch each style.
+  for (var i = 0; i < STYLE_NAMES.length; i++) {
+    fetchStyle(styleElements, STYLE_NAMES[i]);
+  }
+  addStorageListener(styleElements);
+}
+
+onPageStart();
