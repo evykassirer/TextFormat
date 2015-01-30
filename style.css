@@ -25,16 +25,6 @@ body {
 	background-color: #E6E6FA;
 }
 
-select {
-	position: relative;
-	float:right;
-	border: none;
-	background: white;
-	width: 90px;
-	border-radius:4px;
-	margin-top:3px;
-}
-
 .big-button {
 	width: 100%;
 	margin-top: 30px;
@@ -47,8 +37,29 @@ select {
 	background-color: aliceblue;
 }
 
+/*dropdown*/
+select {
+	display: inline-block;
+	 /*option 1: lines up but without right padding (which might be variable) overlaps */
+	/*position: absolute;*/
+	/*right: 0;*/
+	/*option 2: flexible, but select button is on the next line*/
+	float: right;
+	border: none;
+	background: white;
+	border-radius:4px;
+	margin-top:3px;
+}
+
+/*text
 form span {
-	position:relative;
 	height:100%;
+	display: inline-block;
 	vertical-align: middle;
+}
+
+/*div around each option line*/
+.line {
+	white-space: nowrap;
+	overflow: auto;
 }
