@@ -39,27 +39,30 @@ body {
 
 /*dropdown*/
 select {
-	display: inline-block;
-	 /*option 1: lines up but without right padding (which might be variable) overlaps */
-	/*position: absolute;*/
-	/*right: 0;*/
-	/*option 2: flexible, but select button is on the next line*/
+	display: table-cell; 
+	vertical-align: middle;
 	float: right;
 	border: none;
 	background: white;
 	border-radius:4px;
 	margin-top:3px;
+	margin-left: 10px;
 }
 
-/*text
-form span {
-	height:100%;
-	display: inline-block;
-	vertical-align: middle;
+form {
+	display:table;
+	border-collapse: separate;
+	min-width: 100%;
 }
 
 /*div around each option line*/
 .line {
 	white-space: nowrap;
 	overflow: auto;
+	display:table-row;
+}
+
+.line div {
+	display: table-cell;
+	vertical-align: middle;
 }
